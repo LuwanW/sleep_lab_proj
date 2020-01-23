@@ -57,7 +57,7 @@ app.layout = html.Div(
 def update_output_div(n):
     conn = sqlite3.connect(r'D:\\4th_year\sleep_lab\sleep_lab\data_processor\sleep_lab.db')
     df = pd.read_sql("SELECT * FROM position_info ORDER BY id DESC LIMIT 1", conn)
-    pos = df['position']
+    pos = df['position'][0]
     return 'sleeping position: "{}"'.format(pos[0])
 
 @app.callback(Output('live-graph', 'figure'),
@@ -83,7 +83,7 @@ def update_graph_scatter(n):
             return 0
         app.logger.info('updating heart_info')
 
-        return {'data': [data],'layout' : go.Layout(xaxis=dict(range=[0,1000]),
+        return {'l_data': [data],'layout' : go.Layout(xaxis=dict(range=[0,1000]),
                                                     yaxis=dict(range=[0,5000]),
                                                     title='heart rate vs time'
                                                     )}
@@ -91,11 +91,6 @@ def update_graph_scatter(n):
         with open('errors.txt','a') as f:
             f.write(str(e))
             f.write('\n')
-
-
-
-
-
 
 
 if __name__ == '__main__':

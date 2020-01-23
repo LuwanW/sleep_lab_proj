@@ -5,8 +5,8 @@ useage
     r = Receiver()
     while 1:
         data_list = r.get_data()
-        for data in data_list:
-            print(data)
+        for l_data in data_list:
+            print(l_data)
 '''
 
 
@@ -23,12 +23,12 @@ modTimesinceEpoc = os.path.getmtime(file_name)
 start_time = datetime.datetime.fromtimestamp(modTimesinceEpoc)
 print("last modified live: ", start_time)
 
-# get titile of each data
+# get titile of each l_data
 with open(file_name) as f:
     title = f.readline().rstrip("\n")
 title_list = title.split(',')
 
-class Receiver:
+class Lithic_Receiver:
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -46,10 +46,10 @@ class Receiver:
             print('connection broken')
             raise StopIteration
 
-        # look all the data received at this time
+        # look all the l_data received at this time
         data_list = data_raw.split()
 
-        # process the chopped data into list, lis[0] is previous last element
+        # process the chopped l_data into list, lis[0] is previous last element
         data_end = data_list[-1].decode("utf-8")
         data_first = data_list[0].decode("utf-8")
         self.list.append(data_end)
@@ -57,10 +57,10 @@ class Receiver:
             self.list.pop(0)
 
 
-        # process data into dictionary
+        # process l_data into dictionary
         for data in data_list:
 
-            # check for chopping data
+            # check for chopping l_data
             data = data.decode("utf-8")
 
             if data == data_first and len(data.split()) < len(title_list):
@@ -83,7 +83,7 @@ class Receiver:
 
 if __name__ == "__main__":
 
-    r = Receiver()
+    r = Lithic_Receiver()
     while 1:
         data_list = r.get_data()
         for data in data_list:

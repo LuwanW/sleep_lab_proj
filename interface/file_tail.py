@@ -4,8 +4,8 @@ Python3 module for tailing a file such as a system log that grows continuously.
 Transparently handles files that get rotated or trucated.
 Inspired by the Perl File::Tail module.
 
-A simple algorithm is used to dynamically sleep when no new data is available in
-the file. The longer the amount of time goes by w/o new data the longer the
+A simple algorithm is used to dynamically sleep when no new l_data is available in
+the file. The longer the amount of time goes by w/o new l_data the longer the
 sleep interval will be (up to "max_interval") and starts at "interval".
 
 Example:
@@ -33,10 +33,10 @@ class FileTail(object):
                  file,                  # filename to monitor
                  start_pos="end",       # where to initially start reading from
                  #max_buffer_size=16384, # Max buffer size hint (Not exact; @see file.readlines)
-                 interval=0.1,          # sleep time to wait if no data is present (dynamically changes)
+                 interval=0.1,          # sleep time to wait if no l_data is present (dynamically changes)
                  #min_interval=0.01,     # min sleep time
                  max_interval=5,        # max sleep time 
-                 max_wait=60,           # max time to wait with no data before reopening file
+                 max_wait=60,           # max time to wait with no l_data before reopening file
                  reopen_check="inode",  # how to check if file is different (inode or time) - inode does not work on win32
                  encoding="utf-8"       # file encoding
                 ):
@@ -159,7 +159,7 @@ class FileTail(object):
         while not line:
             line = self.fh.readline()
             if line != "":
-                # track the time we received new data and how much
+                # track the time we received new l_data and how much
                 self.last_time = time()
                 self.last_count = 1
             else:
@@ -170,7 +170,7 @@ class FileTail(object):
         #while len(self._buffer) == 0:
         #    self._buffer = self.fh.readlines(self.max_buffer_size)
         #    if len(self._buffer) > 0:
-        #        # track the time we received new data and how much
+        #        # track the time we received new l_data and how much
         #        self.last_time = time()
         #        self.last_count = len(self._buffer)
         #        self.wait_count = 0
@@ -196,7 +196,7 @@ class FileTail(object):
         #    self.wait()
         #    line = self.fh.readline()
         #    if line != "":
-        #        # track the time we received new data and how much
+        #        # track the time we received new l_data and how much
         #        self.pos = self.fh.tell()
         #        self.last_time = time()
         #        self.last_count = 1 #len(self._buffer)
@@ -220,7 +220,7 @@ class FileTail(object):
 
     # wait for X seconds. The sleep interval is dynamically predicted based on
     # how much was previously read. The predicted interval will never be more
-    # than max_interval. If enough time passes w/o any new data the file will
+    # than max_interval. If enough time passes w/o any new l_data the file will
     # be reopened and checked.
     def wait(self):
         if self.wait_count == 0:

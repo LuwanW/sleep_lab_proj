@@ -8,8 +8,16 @@ from sklearn.model_selection import train_test_split
 from sklearn import svm
 from sklearn import metrics
 import pickle
+'''
+connection:
+black -- right
+blue --left
+red -- back
+'''
 
-class REM:
+
+
+class REM_analysis:
     def __init__(self):
         self.frequency = 'none'
 
@@ -60,19 +68,19 @@ class REM:
 
 
     def classify(self, data,filename):
-        if len(data != 500):
+        if len(data) < 500:
             print("prefer list size is 500(2 seconds data)")
-        features = dict()
-        features['MMD'].append(max(list) - min(list))
-        features['mean'].append(mean(list))
+        features = {}
+        features['MMD'] = [(max(data)-min(data))]
+        features['mean'] = [mean(data)]
         df = pd.DataFrame.from_dict(features)
         loaded_model = pickle.load(open(filename, 'rb'))
-        prediction = loaded_model.predict(pd)
+        prediction = loaded_model.predict(df)
         return prediction
 
 
 if __name__ == "__main__":
-    R = REM()
+    R = REM_analysis()
     # f1 = "D:\program files\Lithic\data\REM_no_movement\REM_no_movement_2020-01-13T10-43-42.txt"
     # f2 = "D:\program files\Lithic\data\REM_left_right\REM_left_right_2020-01-13T10-44-21.txt"
     # f3 = "D:\program files\Lithic\data\REM_around\REM_around_2020-01-13T10-46-56.txt"
