@@ -122,13 +122,14 @@ class Processor_lithic:
 
 
     def insert_heart_info(self, PPG):
+        if PPG.bpm > 100 : PPG.bpm = 100
         with self.conn:
             self.c1.execute("INSERT INTO heart_info VALUES (:bpm, :time_stamp, :id, :ibi, :sdnn, :sdsd, :rmssd,\
                              :pnn20,:pnn50,:hr_mad,:breathingrate)",
                                     {'bpm': PPG.bpm,
                                   'time_stamp': PPG.time_stamp,
-                                    'id': PPG.id,
-                                     'ibi': PPG.ibi,
+                                  'id': PPG.id,
+                                  'ibi': PPG.ibi,
                                   'sdnn': PPG.sdnn,
                                   'sdsd': PPG.sdsd,
                                   'rmssd': PPG.rmssd,
@@ -158,7 +159,6 @@ class Processor_lithic:
     
             position_obj = Position(measures, time, id)
             self.insert_position_info(position_obj)
-            print(measures)
             self.position_x.clear()
             self.position_y.clear()
             self.position_z.clear()
@@ -172,7 +172,7 @@ class Processor_lithic:
     
     def get_ppg_info(self, ppg_data,time, id):
         # 5000*4 = 20 seconds
-        seconds = 15
+        seconds = 5
         points = seconds / 0.004
         bpm = 0
         measures = {}
@@ -181,14 +181,13 @@ class Processor_lithic:
             try:
                 working_data, measures = hp.process(np.array(self.ppg_list), 250.0)
                 bpm = measures['bpm']
-                print(measures)
             except:
                 print('bad signal, continue')
             self.ppg_list.clear()
-            if measures != {}:
-                ppg = PPG(bpm, time,id,measures)
-                self.insert_heart_info(ppg)
-                print(ppg.bpm)
+            if bpm > 100 or measures == {}: bpm = 99.99
+            ppg = PPG(bpm, time,id,measures)
+            self.insert_heart_info(ppg)
+            print(ppg.bpm)
             return ppg
     
         self.ppg_list.append(float(ppg_data))
@@ -255,7 +254,7 @@ class Processor_lithic:
                 position = self.get_position_info(float(l_data['IMU1_acc_x']), float(l_data['IMU1_acc_y']),
                                                float(l_data['IMU1_acc_z'])
                                                , l_data['DateTime'], l_data['Timestamp'])
-                ppg = self.get_ppg_info(l_data['Analog2_chA'], l_data['DateTime'], l_data['Timestamp'])
+                ppg = self.get_ppg_info(l_data['Analog1_chA'], l_data['DateTime'], l_data['Timestamp'])
 
 
 
@@ -264,7 +263,7 @@ class Processor_lithic:
 class Processor_serial:
 
     def __init__(self):
-        self.serial_receiver = Serial_Receiver('COM9')
+        self.serial_receiver = Serial_Receiver('COM4')
 
         # set up for database
         self.conn = sqlite3.connect('sleep_lab_serial.db')
@@ -293,6 +292,8 @@ class Processor_serial:
             r FLOAT,
             g FLOAT,
             b FLOAT,
+            Inst_breathing_rate FLOAT,
+            Ave_breathing_rate FLOAT,
             id INTEGER
         )''')
         self.conn.commit()
@@ -300,7 +301,7 @@ class Processor_serial:
     def insert_env_info(self, env):
         with self.conn:
             self.c2.execute("INSERT INTO env_info VALUES (:Temperature, :time_stamp, :Humidity, \
-                            :Proximity, :Pressure, :r, :g, :b,:id)",
+                            :Proximity, :Pressure, :r, :g, :b, :Inst_breathing_rate, :Ave_breathing_rate  ,:id)",
                             {'Temperature': env.Temperature,
                              'time_stamp': env.time_stamp,
                              'Humidity': env.Humidity,
@@ -309,6 +310,8 @@ class Processor_serial:
                              'r': env.r,
                              'g': env.g,
                              'b': env.b,
+                             'Inst_breathing_rate':env.Inst_breathing_rate,
+                             'Ave_breathing_rate': env.Ave_breathing_rate,
                              'id': env.id})
 
     def get_env_info(self, env_dict):

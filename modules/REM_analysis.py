@@ -8,6 +8,8 @@ from sklearn.model_selection import train_test_split
 from sklearn import svm
 from sklearn import metrics
 import pickle
+import matplotlib.pyplot as plt
+
 '''
 connection:
 black -- right
@@ -92,10 +94,13 @@ if __name__ == "__main__":
 
     # 0 = not moving, 1 = moving
     F1 = R.feature_extraction(D1, 0)
+    plt.scatter(F1['MMD'], F1['mean'], c = 'b')
     print(F1)
     F2 = R.feature_extraction(D2, 1)
+    plt.scatter(F2['MMD'], F2['mean'], c = 'r')
     print(F2)
-    filename = 'SVM_model.sav'
+    filename = 'SVM_model-cp.sav'
+    plt.show()
     R.train_model(F1, F2,filename)
 
 

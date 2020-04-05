@@ -9,4 +9,6 @@ class Environment:
         self.r = float(dict['r'])
         self.g = float(dict['g'])
         self.b = float(dict['b'])
+        self.Inst_breathing_rate = float(dict['Inst_breathing_rate'])
+        self.Ave_breathing_rate = float(dict['Ave_breathing_rate'])
 

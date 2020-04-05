@@ -24,13 +24,16 @@ class Serial_Receiver:
             self.data_dict['r'] = datas[5]
             self.data_dict['g'] = datas[6]
             self.data_dict['b'] = datas[7]
+            self.data_dict['Inst_breathing_rate'] = datas[8]
+            self.data_dict['Ave_breathing_rate'] = datas[9]
+
             this_data_time =datetime.datetime.now()
             self.data_dict['DateTime'] = this_data_time.strftime("%m-%d-%Y %H:%M:%S")
             self.data_dict['dict_id'] = dict_id
             yield self.data_dict
 
 if __name__ == '__main__':
-    s = Serial_Receiver('COM9')
+    s = Serial_Receiver('COM4')
     # COM3 for the temp sensor one
     for data in s.get_data():
         print(data)
